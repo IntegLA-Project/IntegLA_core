@@ -1,24 +1,17 @@
-val_names = ["alpha", "beta", "gamma"]
-vec_names = ["x", "y", "z"]
-mat_names = ["A", "B", "C"]
+scalar_name = ["alpha", "beta", "gamma"]
+vector_name = ["x", "y", "z"]
+matrix_name = ["A", "B", "C"]
 type_names = {"double":"f64Vec", "float": "f32Vec", "int32_t": "i32Vec", "int64_t": "i64Vec"}
+
+class variable():
+    def __init__(self):
+        self.type="double"
+        self.classname="f32Vec" # e.g. f32Vec
+        self.format="vector" # vector, scalar
+        self.name="x" # x, y, z
 
 
 class function_def():
-    def __init__(self,
-    target,
-    func,
-    args,
-    ret
-    ):
-        self.target=target
-        self.name=func
-        self.arg_num=len(args)
-        self.prototype=ret + " " + self.name
-    
-
-class Generator():
-    # create args -> ["alpha":"const double", "x": "coust f64Vec"...]
     def generate_arg_list(self, args):
         arg_names = list()
         vec_count = 0
@@ -34,8 +27,23 @@ class Generator():
             elif ("Mat" in arg):
                 arg_names.append(mat_names[mat_count])
                 mat_count += 1
-
         return arg_names
+
+    def __init__(self,
+    target,
+    func,
+    args,
+    ret
+    ):
+        self.type=target
+        self.ret=ret
+        self.arg_num=len(args)
+        self.name=func
+        self.prototype=ret + " " + self.name
+    
+
+class Generator():
+    # create args -> ["alpha":"const double", "x": "coust f64Vec"...]
 
     def generate_arg_types(self, args, target):
         arg_types = list()
@@ -66,7 +74,8 @@ class Generator():
         for i in range(len(targets)):
             function=function_def(target=targets[i],func=func, args=args, ret=returns[i])
             print(function.arg_num)
-            print(function.target)
+            print(function.type)
+            print(function.name)
             print(function.prototype)
             
 #             arg_types = self.generate_arg_types(args=args, target=target)
@@ -80,4 +89,5 @@ axpy = Generator(
         func = "axpy",
         returns = ["void", "void", "void", "void"],
         args = ["const {target}", "const {T}Vec", "{T}Vec"]
+        arg_names = ["{scalar[0]}", "vec[0]", "vec[1]"]
         )
