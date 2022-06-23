@@ -3,14 +3,6 @@ vector_name = ["x", "y", "z"]
 matrix_name = ["A", "B", "C"]
 type_names = {"double":"f64Vec", "float": "f32Vec", "int32_t": "i32Vec", "int64_t": "i64Vec"}
 
-class variable():
-    def __init__(self):
-        self.type="double"
-        self.classname="f32Vec" # e.g. f32Vec
-        self.format="vector" # vector, scalar
-        self.name="x" # x, y, z
-
-
 class function_def():
     def generate_arg_list(self, args):
         arg_names = list()
@@ -88,6 +80,5 @@ axpy = Generator(
         targets = ["double", "float", "int32_t", "int64_t"],
         func = "axpy",
         returns = ["void", "void", "void", "void"],
-        args = ["const {target}", "const {T}Vec", "{T}Vec"]
-        arg_names = ["{scalar[0]}", "vec[0]", "vec[1]"]
+        args = ["const {target}", "const {T}Vec", "{T}Vec"],
         )
