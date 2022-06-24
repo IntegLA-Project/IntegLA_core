@@ -13,7 +13,8 @@ os.mkdir(obj_dir)
 with clib_gen.read_and_formatting(obj_dir + "axpy.c",
                                   obj_dir + "axpy_test.cpp",
                                   obj_dir + "blas.hpp") as (src, test, header):
-    clib_gen.generate(func="axpy",
+    clib_gen.generate(name="axpy",
+                      group="blas",
                       targets=[("double", "void"), ("float", "void"),
                                ("int32_t", "void"), ("int64_t", "void")],
                       args=[("{target}", "{Val0}"), ("const {Vec}", "{Vec0}"),
@@ -24,7 +25,8 @@ with clib_gen.read_and_formatting(obj_dir + "axpy.c",
 
 with clib_gen.read_and_formatting(obj_dir + "dot.c", obj_dir + "dot_test.cpp",
                                   obj_dir + "blas.hpp") as (src, test, header):
-    clib_gen.generate(func="dot",
+    clib_gen.generate(name="dot",
+                      group="blas",
                       targets=[("double", "double"), ("float", "float"),
                                ("int32_t", "int32_t"), ("int64_t", "int64_t")],
                       args=[("const {Vec}", "{Vec0}"), ("{Vec}", "{Vec1}")],
