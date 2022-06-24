@@ -1,5 +1,6 @@
 import contextlib
 
+LIBNAME="IntegLA"
 TYPE_NAMES = {
     "double": "f64Vec",
     "float": "f32Vec",
@@ -42,11 +43,33 @@ class arg_type():
         self.name = arg[1].format(**CONVERT_LIST,
                                   target=target,
                                   Vec=TYPE_NAMES[target])
+        self.pure_type = self.type.replace("const ", "")
+
+class function_type():
+    def __init__(
+        self,
+        func,
+        group,
+        ret,
+        target,
+        args
+        ):
+        # parse_args
+        arg_list = list()
+        for arg in args:
+            arg_list.append(arg_type(target=target, arg=arg))
+
+        self.purename=func
+        self.name= LIBNAME + "_" + group + "_" + "_".join([arg.pure_type  for arg in arg_list]) + "_" + func
+        self.ret=ret
+        print(self.name)
 
 
-def generate(func, targets, args, src_file, test_file, header_file):
+
+def generate(func, group, targets, args, src_file, test_file, header_file):
     main = str()
     for target, ret in targets:
+        function=function_type(func=func, group=group, ret=ret, target=target, args=args)
 
         # create prototype
         arg_list = list()
