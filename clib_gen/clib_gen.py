@@ -5,10 +5,10 @@ CONVERT_LIST={"Vec0":"x", "Vec1":"y", "Vec2":"z",
               "Val0":"alpha", "Val1":"beta", "Val2":"gamma"}
 
 @contextlib.contextmanager
-def reading_incompletely(filename1, filename2, filename3):
-  file1 = open(filename1, 'w')
-  file2 = open(filename2, 'w')
-  file3 = open(filename3, 'w')
+def read_and_formatting(filename1, filename2, filename3):
+  file1 = open(filename1, 'a')
+  file2 = open(filename2, 'a')
+  file3 = open(filename3, 'a')
   yield file1, file2, file3
   #TODO clang-format
   file1.close()
@@ -28,7 +28,10 @@ class arg_type():
 def generate(
         func,
         targets,
-        args
+        args,
+        src_file,
+        test_file,
+        header_file
         ):
     main = "#include<stdio.h>\n"
     for target, ret in targets:
@@ -40,5 +43,5 @@ def generate(
 
         main += ret + " " + func + "("
         main += ", ".join([arg.type + " " + arg.name for arg in arg_list]) + ")"
-        print(main)
+        header_file.writelines(main+";\n")
         main=""
