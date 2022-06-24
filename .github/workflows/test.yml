@@ -3,7 +3,7 @@ name: GitHub Pages
 on: [push]
 
 jobs:
-  document:
+  test:
     runs-on: ubuntu-22.04
     container:
       image: ghcr.io/ricosjp/allgebra/cuda11_7/clang13/oss:22.05.4 #FIXME doxygen+clang14 bug
@@ -17,5 +17,5 @@ jobs:
         apt update
         apt install -y python3 make
 
-    - name: test
+    - name: run
       run: make
