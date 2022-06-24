@@ -1,5 +1,4 @@
 import sys
-sys.dont_write_bytecode = True
 import clib_gen
 # obj_dir="obj/"
 # setup_dir(objdir)
