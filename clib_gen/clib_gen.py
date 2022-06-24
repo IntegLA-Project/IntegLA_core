@@ -13,7 +13,8 @@ CONVERT_LIST = {
     "Vec2": "z",
     "Val0": "alpha",
     "Val1": "beta",
-    "Val2": "gamma"
+    "Val2": "gamma",
+    "INT": "size_t"
 }
 
 
@@ -63,7 +64,21 @@ class function_type():
         self.prototype = self.declare + ";"
 
 
-def generate(name, group, targets, args, src_file, test_file, header_file):
+class code_type():
+
+    def __init__(self, declare, operation, target):
+        self.operation = operation
+        self.code = declare + "{\n"
+
+        self.op = operation.format(**CONVERT_LIST,
+                                   target=target,
+                                   Vec=TYPE_NAMES[target])
+
+        self.code += self.op + "}\n"
+
+
+def generate(name, group, targets, args, operation, src_file, test_file,
+             header_file):
     main = str()
     for target, ret in targets:
         func = function_type(name=name,
@@ -71,4 +86,10 @@ def generate(name, group, targets, args, src_file, test_file, header_file):
                              ret=ret,
                              target=target,
                              args=args)
+        code = code_type(declare=func.declare,
+                         operation=operation,
+                         target=target)
+
+        # write file
         header_file.writelines(func.prototype + "\n")
+        src_file.writelines(code.code)
