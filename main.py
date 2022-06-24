@@ -18,7 +18,12 @@ with clib_gen.read_and_formatting(obj_dir + "axpy.c",
                       targets=[("double", "void"), ("float", "void"),
                                ("int32_t", "void"), ("int64_t", "void")],
                       args=[("{target}", "{Val0}"), ("const {Vec}", "{Vec0}"),
-                            ("{Vec}", "{Vec1}")],
+                          ("{Vec}", "{Vec1}")],
+                      operation = '''
+    for({INT} i = 0; i < {Vec0}.size; i++){
+        {Vec1}[i] += {Val0} * {Vec0};
+    }
+    ''',
                       src_file=src,
                       test_file=test,
                       header_file=header)
@@ -30,6 +35,12 @@ with clib_gen.read_and_formatting(obj_dir + "dot.c", obj_dir + "dot_test.cpp",
                       targets=[("double", "double"), ("float", "float"),
                                ("int32_t", "int32_t"), ("int64_t", "int64_t")],
                       args=[("const {Vec}", "{Vec0}"), ("{Vec}", "{Vec1}")],
+                      operation = '''
+    for({INT} i = 0; i < {Vec0}.size; i++){
+        {Vec1}[i] += {Val0} * {Vec0};
+    }
+    ''',
                       src_file=src,
                       test_file=test,
                       header_file=header)
+
