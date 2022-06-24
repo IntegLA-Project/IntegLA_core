@@ -18,3 +18,12 @@ with clib_gen.read_and_formatting(obj_dir+"axpy.c", obj_dir+"axpy_test.cpp", obj
         test_file=test,
         header_file=header
         )
+
+with clib_gen.read_and_formatting(obj_dir+"dot.c", obj_dir+"dot_test.cpp", obj_dir+"blas.hpp" ) as (src,test,header):
+    clib_gen.generate(func = "dot",
+        targets = [("double", "double"), ("float", "float"), ("int32_t", "int32_t"), ("int64_t", "int64_t")],
+        args = [("const {Vec}", "{Vec0}"), ("{Vec}", "{Vec1}")],
+        src_file=src,
+        test_file=test,
+        header_file=header
+        )

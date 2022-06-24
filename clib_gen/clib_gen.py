@@ -33,7 +33,7 @@ def generate(
         test_file,
         header_file
         ):
-    main = "#include<stdio.h>\n"
+    main = str()
     for target, ret in targets:
 
         # create prototype
