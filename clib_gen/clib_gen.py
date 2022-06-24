@@ -55,26 +55,18 @@ class function_type():
         args
         ):
         # parse_args
-        arg_list = list()
+        self.arg_list = list()
         for arg in args:
             arg_list.append(arg_type(target=target, arg=arg))
 
         self.purename=func
         self.name= LIBNAME + "_" + group + "_" + "_".join([arg.pure_type  for arg in arg_list]) + "_" + func
         self.ret=ret
-        print(self.name)
-
-
 
 def generate(func, group, targets, args, src_file, test_file, header_file):
     main = str()
     for target, ret in targets:
         function=function_type(func=func, group=group, ret=ret, target=target, args=args)
-
-        # create prototype
-        arg_list = list()
-        for arg in args:
-            arg_list.append(arg_type(target=target, arg=arg))
 
         main += ret + " " + func + "("
         main += ", ".join([arg.type + " " + arg.name
