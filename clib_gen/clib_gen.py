@@ -48,7 +48,7 @@ class arg_type():
 class function_type():
     def __init__(
         self,
-        func,
+        name,
         group,
         ret,
         target,
@@ -57,19 +57,20 @@ class function_type():
         # parse_args
         self.arg_list = list()
         for arg in args:
-            arg_list.append(arg_type(target=target, arg=arg))
+            self.arg_list.append(arg_type(target=target, arg=arg))
 
-        self.purename=func
-        self.name= LIBNAME + "_" + group + "_" + "_".join([arg.pure_type  for arg in arg_list]) + "_" + func
+        self.purename=name
+        self.name= LIBNAME + "_" + group + "_" + "_".join([arg.pure_type  for arg in self.arg_list]) + "_" + name
         self.ret=ret
 
-def generate(func, group, targets, args, src_file, test_file, header_file):
+
+def generate(name, group, targets, args, src_file, test_file, header_file):
     main = str()
     for target, ret in targets:
-        function=function_type(func=func, group=group, ret=ret, target=target, args=args)
+        func=function_type(name=name, group=group, ret=ret, target=target, args=args)
 
-        main += ret + " " + func + "("
+        main += func.ret + " " + func.name + "("
         main += ", ".join([arg.type + " " + arg.name
-                           for arg in arg_list]) + ")"
+                           for arg in func.arg_list]) + ")"
         header_file.writelines(main + ";\n")
         main = ""
