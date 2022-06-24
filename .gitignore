@@ -2,3 +2,4 @@
 *.hpp
 *.c
 __pycache__/
+obj/
