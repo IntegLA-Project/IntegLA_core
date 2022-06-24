@@ -62,15 +62,12 @@ class function_type():
         self.purename=name
         self.name= LIBNAME + "_" + group + "_" + "_".join([arg.pure_type  for arg in self.arg_list]) + "_" + name
         self.ret=ret
+        self.declare = self.ret + " " + self.name + "(" + ", ".join([arg.type + " " + arg.name for arg in self.arg_list]) + ")"
+        self.prototype = self.declare+";"
 
 
 def generate(name, group, targets, args, src_file, test_file, header_file):
     main = str()
     for target, ret in targets:
         func=function_type(name=name, group=group, ret=ret, target=target, args=args)
-
-        main += func.ret + " " + func.name + "("
-        main += ", ".join([arg.type + " " + arg.name
-                           for arg in func.arg_list]) + ")"
-        header_file.writelines(main + ";\n")
-        main = ""
+        header_file.writelines(func.prototype + "\n")
