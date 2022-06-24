@@ -62,6 +62,13 @@ class function_type():
             [arg.type + " " + arg.name for arg in self.arg_list]) + ")"
         self.prototype = self.declare + ";"
 
+class code_type():
+
+    def __init__(self, declare, operation):
+        self.operation = operation
+        self.code = declare + "{\n"
+        self.code += operation + "}\n"
+
 def generate(name, group, targets, args, operation, src_file, test_file, header_file):
     main = str()
     for target, ret in targets:
@@ -70,11 +77,12 @@ def generate(name, group, targets, args, operation, src_file, test_file, header_
                              ret=ret,
                              target=target,
                              args=args)
-        header_file.writelines(func.prototype + "\n")
+        code = code_type(declare=func.declare, operation=operation)
 
-        main = func.declare + "{\n"
-        main += operation
-        print(main+"}\n")
+        # write file
+        header_file.writelines(func.prototype + "\n")
+        src_file.writelines(code.code)
+
 
 
 
