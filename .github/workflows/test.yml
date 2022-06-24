@@ -1,0 +1,21 @@
+name: GitHub Pages
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-22.04
+    container:
+      image: ghcr.io/ricosjp/allgebra/cuda11_7/clang13/oss:22.05.4 #FIXME doxygen+clang14 bug
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: install python
+      run: |
+        apt update
+        apt install -y python3 make
+
+    - name: run
+      run: make
