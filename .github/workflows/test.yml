@@ -15,7 +15,7 @@ jobs:
     - name: install python
       run: |
         apt update
-        apt install -y python3 make
+        apt install -y python3 make clang-format
 
     - name: run
       run: make
