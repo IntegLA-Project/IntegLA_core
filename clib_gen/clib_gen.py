@@ -1,4 +1,5 @@
 import contextlib
+import subprocess, sys
 
 LIBNAME = "IntegLA"
 TYPE_NAMES = {
@@ -24,10 +25,21 @@ def read_and_formatting(filename1, filename2, filename3):
     file2 = open(filename2, 'a')
     file3 = open(filename3, 'a')
     yield file1, file2, file3
-    #TODO clang-format
     file1.close()
     file2.close()
     file3.close()
+    err = subprocess.run(['clang-format', '-i', filename1])
+    if err.returncode != 0:
+        print('clang-format failed.')
+        sys.exit(1)
+    err = subprocess.run(['clang-format', '-i', filename2])
+    if err.returncode != 0:
+        print('clang-format failed.')
+        sys.exit(1)
+    err = subprocess.run(['clang-format', '-i', filename3])
+    if err.returncode != 0:
+        print('clang-format failed.')
+        sys.exit(1)
 
 
 class arg_type():
