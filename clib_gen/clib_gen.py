@@ -1,5 +1,5 @@
 import contextlib
-import subprocess, sys
+import subprocess, sys, shutil
 
 LIBNAME = "IntegLA"
 TYPE_NAMES = {
@@ -28,17 +28,26 @@ def read_and_formatting(filename1, filename2, filename3):
     file1.close()
     file2.close()
     file3.close()
+
+    # check clang-format command is installed?
+    if shutil.which('clang-format') == None:
+        print('clang-format is not found.')
+        sys.exit(1)
+
+    # formatting..
     err = subprocess.run(['clang-format', '-i', filename1])
     if err.returncode != 0:
-        print('clang-format failed.')
+        print('clang-format failed for ' + filename1)
         sys.exit(1)
+
     err = subprocess.run(['clang-format', '-i', filename2])
     if err.returncode != 0:
-        print('clang-format failed.')
+        print('clang-format failed for ' + filename2)
         sys.exit(1)
+
     err = subprocess.run(['clang-format', '-i', filename3])
     if err.returncode != 0:
-        print('clang-format failed.')
+        print('clang-format failed for ' + filename3)
         sys.exit(1)
 
 
