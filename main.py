@@ -21,7 +21,7 @@ with clib_gen.read_and_formatting(obj_dir + "axpy.c",
                             ("{Vec}", "{Vec1}")],
                       operation='''
                       for( {INT} i = 0; i < {Vec0}.size; i++){{
-                          {Vec1}[i] += {Val0} * {Vec0};
+                          {Vec1}[i] += {Val0} * {Vec0}[i];
                       }}
                       ''',
                       src_file=src,
@@ -37,7 +37,7 @@ with clib_gen.read_and_formatting(obj_dir + "dot.c", obj_dir + "dot_test.cpp",
                       args=[("const {Vec}", "{Vec0}"), ("{Vec}", "{Vec1}")],
                       operation='''
                       for( {INT} i = 0; i < {Vec0}.size; i++){{
-                          {Vec1}[i] += {Val0} * {Vec0};
+                          {Vec1}[i] += {Val0} * {Vec0}[i];
                       }}
                       ''',
                       src_file=src,
