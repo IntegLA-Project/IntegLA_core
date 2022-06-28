@@ -1,6 +1,3 @@
-import contextlib
-import subprocess, sys, shutil
-
 LIBNAME = "IntegLA"
 TYPE_NAMES = {
     "double": "f64Vec",
@@ -19,38 +16,6 @@ CONVERT_LIST = {
 }
 
 
-@contextlib.contextmanager
-def read_and_formatting(filename1, filename2, filename3):
-    file1 = open(filename1, 'a')
-    file2 = open(filename2, 'a')
-    file3 = open(filename3, 'a')
-    yield file1, file2, file3
-
-    # check clang-format command is installed?
-    if shutil.which('clang-format') == None:
-        print('clang-format is not found.')
-        sys.exit(1)
-
-    # file close and formatting.
-    file1.close()
-    err = subprocess.run(['clang-format', '-i', filename1])
-    if err.returncode != 0:
-        print('clang-format failed for ' + filename1)
-        sys.exit(1)
-
-    file2.close()
-    err = subprocess.run(['clang-format', '-i', filename2])
-    if err.returncode != 0:
-        print('clang-format failed for ' + filename2)
-        sys.exit(1)
-
-    file3.close()
-    err = subprocess.run(['clang-format', '-i', filename3])
-    if err.returncode != 0:
-        print('clang-format failed for ' + filename3)
-        sys.exit(1)
-
-
 class arg_type():
 
     def __init__(
@@ -67,24 +32,6 @@ class arg_type():
                                   Vec=TYPE_NAMES[target])
         self.pure_type = self.type.replace("const ", "")
 
-
-class function_type():
-
-    def __init__(self, name, group, ret, target, args):
-        # parse_args
-        self.arg_list = list()
-        for arg in args:
-            self.arg_list.append(arg_type(target=target, arg=arg))
-
-        self.purename = name
-        self.name = LIBNAME + "_" + group + "_" + "_".join(
-            [arg.pure_type for arg in self.arg_list]) + "_" + name
-        self.ret = ret
-        self.declare = self.ret + " " + self.name + "(" + ", ".join(
-            [arg.type + " " + arg.name for arg in self.arg_list]) + ")"
-        self.prototype = self.declare + ";"
-
-
 class code_type():
 
     def __init__(self, declare, operation, target):
@@ -98,6 +45,29 @@ class code_type():
         self.code += self.op + "}\n"
 
 
+class function_type():
+
+    def __init__(self, name, group, ret, target, args, operation):
+        # parse args
+        self.arg_list = list()
+        for arg in args:
+            self.arg_list.append(arg_type(target=target, arg=arg))
+
+        self.purename = name
+        self.name = LIBNAME + "_" + group + "_" + "_".join(
+            [arg.pure_type for arg in self.arg_list]) + "_" + name
+        self.ret = ret
+        self.declare = self.ret + " " + self.name + "(" + ", ".join(
+            [arg.type + " " + arg.name for arg in self.arg_list]) + ")"
+        self.prototype = self.declare + ";"
+
+        # create code
+        self.code = code_type(declare=self.declare,
+                operation=operation,
+                target=target
+                )
+
+
 def generate(name, group, targets, args, operation, src_file, test_file,
              header_file):
     main = str()
@@ -106,11 +76,10 @@ def generate(name, group, targets, args, operation, src_file, test_file,
                              group=group,
                              ret=ret,
                              target=target,
-                             args=args)
-        code = code_type(declare=func.declare,
-                         operation=operation,
-                         target=target)
+                             args=args,
+                             operation=operation
+                             )
 
         # write file
         header_file.writelines(func.prototype + "\n")
-        src_file.writelines(code.code)
+        src_file.writelines(func.code.code)
