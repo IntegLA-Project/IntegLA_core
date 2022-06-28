@@ -11,8 +11,9 @@ os.mkdir(obj_dir)
 
 # BLAS Lv1 gen
 with clib_gen_io.read_and_formatting(obj_dir + "axpy.c",
-                                  obj_dir + "axpy_test.cpp",
-                                  obj_dir + "blas.hpp") as (src, test, header):
+                                     obj_dir + "axpy_test.cpp",
+                                     obj_dir + "blas.hpp") as (src, test,
+                                                               header):
     clib_gen.generate(name="axpy",
                       group="blas",
                       targets=[("double", "void"), ("float", "void"),
@@ -28,16 +29,19 @@ with clib_gen_io.read_and_formatting(obj_dir + "axpy.c",
                       test_file=test,
                       header_file=header)
 
-with clib_gen_io.read_and_formatting(obj_dir + "dot.c", obj_dir + "dot_test.cpp",
-                                  obj_dir + "blas.hpp") as (src, test, header):
+with clib_gen_io.read_and_formatting(obj_dir + "dot.c",
+                                     obj_dir + "dot_test.cpp",
+                                     obj_dir + "blas.hpp") as (src, test,
+                                                               header):
     clib_gen.generate(name="dot",
                       group="blas",
                       targets=[("double", "double"), ("float", "float"),
                                ("int32_t", "int32_t"), ("int64_t", "int64_t")],
                       args=[("const {Vec}", "{Vec0}"), ("{Vec}", "{Vec1}")],
                       operation='''
+                      {target_ret} {RET};
                       for( {INT} i = 0; i < {Vec0}.size; i++){{
-                          {Vec1}[i] += {Val0} * {Vec0}[i];
+                          {RET} += {Vec0}[i] * {Vec1}[i];
                       }}
                       ''',
                       src_file=src,

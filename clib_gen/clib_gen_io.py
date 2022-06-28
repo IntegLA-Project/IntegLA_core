@@ -1,5 +1,7 @@
 import contextlib
 import subprocess, sys, shutil
+
+
 @contextlib.contextmanager
 def read_and_formatting(filename1, filename2, filename3):
     file1 = open(filename1, 'a')
