@@ -1,7 +1,7 @@
 import sys
 import os
 import shutil
-from clib_gen import clib_gen
+from clib_gen import clib_gen, clib_gen_io
 
 # setup dir
 obj_dir = "./obj/"
@@ -10,7 +10,7 @@ if (os.path.isdir(obj_dir) == True):
 os.mkdir(obj_dir)
 
 # BLAS Lv1 gen
-with clib_gen.read_and_formatting(obj_dir + "axpy.c",
+with clib_gen_io.read_and_formatting(obj_dir + "axpy.c",
                                   obj_dir + "axpy_test.cpp",
                                   obj_dir + "blas.hpp") as (src, test, header):
     clib_gen.generate(name="axpy",
@@ -28,7 +28,7 @@ with clib_gen.read_and_formatting(obj_dir + "axpy.c",
                       test_file=test,
                       header_file=header)
 
-with clib_gen.read_and_formatting(obj_dir + "dot.c", obj_dir + "dot_test.cpp",
+with clib_gen_io.read_and_formatting(obj_dir + "dot.c", obj_dir + "dot_test.cpp",
                                   obj_dir + "blas.hpp") as (src, test, header):
     clib_gen.generate(name="dot",
                       group="blas",
