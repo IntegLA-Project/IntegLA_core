@@ -16,6 +16,25 @@ CONVERT_LIST = {
     "RET": "ret"
 }
 
+class code_section():
+
+    def __init__(self, declare, operation, target, ret, omp_option):
+        self.operation = operation
+        self.code = declare + "{\n"
+
+        # omp_section
+        self.omp_section="#pragma omp parallel for"
+        if omp_option != None:
+            self.omp_section += " " + omp_option
+
+        self.op = operation.format(**CONVERT_LIST,
+                                   target=target,
+                                   Vec=TYPE_NAMES[target],
+                                   target_ret=ret,
+                                   omp_directive=self.omp_section
+                                   )
+
+        self.code += self.op + "}\n"
 
 class arg_type():
 
@@ -38,22 +57,6 @@ class arg_type():
         self.pure_type = self.type.replace("const ", "")
 
 
-class code_type():
-
-    def __init__(self, declare, operation, target, ret, omp_section):
-        self.operation = operation
-        self.code = declare + "{\n"
-
-        self.op = operation.format(**CONVERT_LIST,
-                                   target=target,
-                                   Vec=TYPE_NAMES[target],
-                                   target_ret=ret,
-                                   omp_directive=omp_section
-                                   )
-
-        self.code += self.op + "}\n"
-
-
 class function_type():
 
     def __init__(self, name, group, ret, target, args, operation, omp_option):
@@ -70,17 +73,13 @@ class function_type():
             [arg.type + " " + arg.name for arg in self.arg_list]) + ")"
         self.prototype = self.declare + ";"
 
-        # omp_section
-        self.omp_loop="#pragma omp parallel for"
-        if omp_option != None:
-            self.omp_loop += " " + omp_option
 
         # create code
-        self.code = code_type(declare=self.declare,
+        self.code = code_section(declare=self.declare,
                               operation=operation,
                               target=target,
                               ret=ret,
-                              omp_section=self.omp_loop)
+                              omp_option=omp_option)
 
 
 def generate(name, group, targets, args, operation, src_file, test_file,

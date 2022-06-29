@@ -39,7 +39,7 @@ with clib_gen_io.read_and_formatting(obj_dir + "dot.c",
                       targets=[("double", "double"), ("float", "float"),
                                ("int32_t", "int32_t"), ("int64_t", "int64_t")],
                       args=[("const {Vec}", "{Vec0}"), ("{Vec}", "{Vec1}")],
-                      omp_option="reduction(+:ret)",
+                      omp_option="reduction(+:{RET})",
                       operation='''
                       {target_ret} {RET};
 
