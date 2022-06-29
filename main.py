@@ -21,6 +21,7 @@ with clib_gen_io.read_and_formatting(obj_dir + "axpy.c",
                       args=[("{target}", "{Val0}"), ("const {Vec}", "{Vec0}"),
                             ("{Vec}", "{Vec1}")],
                       operation='''
+                      {omp_directive}
                       for( {INT} i = 0; i < {Vec0}.size; i++){{
                           {Vec1}[i] += {Val0} * {Vec0}[i];
                       }}
@@ -38,8 +39,11 @@ with clib_gen_io.read_and_formatting(obj_dir + "dot.c",
                       targets=[("double", "double"), ("float", "float"),
                                ("int32_t", "int32_t"), ("int64_t", "int64_t")],
                       args=[("const {Vec}", "{Vec0}"), ("{Vec}", "{Vec1}")],
+                      omp_option="reduction(+:{RET})",
                       operation='''
                       {target_ret} {RET};
+
+                      {omp_directive}
                       for( {INT} i = 0; i < {Vec0}.size; i++){{
                           {RET} += {Vec0}[i] * {Vec1}[i];
                       }}
