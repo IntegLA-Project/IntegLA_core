@@ -59,7 +59,7 @@ class code_section():
             self.op.code += "return {RET};".format(**CONVERT_LIST)
 
 
-        self.code += self.op.code + "}\n"
+        self.code += self.op.code + "}\n\n"
 
 class arg_type():
 
