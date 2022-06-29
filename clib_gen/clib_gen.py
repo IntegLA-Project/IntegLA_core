@@ -44,7 +44,6 @@ class code_section():
         self.operation = operation
         self.code = declare + "{\n"
 
-
         self.omp = code_omp_section(declare=declare,
                               operation=operation,
                               target=target,
@@ -56,6 +55,9 @@ class code_section():
                               target=target,
                               ret=ret,
                               omp_section=self.omp.code)
+        if ret != "void":
+            self.op.code += "return {RET};".format(**CONVERT_LIST)
+
 
         self.code += self.op.code + "}\n"
 
