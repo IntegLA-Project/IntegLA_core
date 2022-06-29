@@ -16,25 +16,48 @@ CONVERT_LIST = {
     "RET": "ret"
 }
 
+class code_omp_section():
+
+    def __init__(self, declare, operation, target, ret, omp_option):
+        self.code="#pragma omp parallel for"
+        if omp_option != None:
+            self.option = omp_option.format(**CONVERT_LIST,
+                                   target=target,
+                                   Vec=TYPE_NAMES[target],
+                                   target_ret=ret,
+                                   )
+            self.code += " " + self.option
+
+class code_operation_section():
+
+    def __init__(self, declare, operation, target, ret, omp_section):
+        self.code = operation.format(**CONVERT_LIST,
+                                   target=target,
+                                   Vec=TYPE_NAMES[target],
+                                   target_ret=ret,
+                                   omp_directive=omp_section
+                                   )
+
 class code_section():
 
     def __init__(self, declare, operation, target, ret, omp_option):
         self.operation = operation
         self.code = declare + "{\n"
 
-        # omp_section
-        self.omp_section="#pragma omp parallel for"
-        if omp_option != None:
-            self.omp_section += " " + omp_option
 
-        self.op = operation.format(**CONVERT_LIST,
-                                   target=target,
-                                   Vec=TYPE_NAMES[target],
-                                   target_ret=ret,
-                                   omp_directive=self.omp_section
-                                   )
+        self.omp = code_omp_section(declare=declare,
+                              operation=operation,
+                              target=target,
+                              ret=ret,
+                              omp_option=omp_option)
 
-        self.code += self.op + "}\n"
+        self.op = code_operation_section(declare=declare,
+                              operation=operation,
+                              target=target,
+                              ret=ret,
+                              omp_section=self.omp.code)
+
+        self.code += self.op.code + "}\n"
 
 class arg_type():
 
