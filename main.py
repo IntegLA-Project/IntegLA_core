@@ -18,7 +18,7 @@ with clib_gen_io.read_and_formatting(obj_dir + "axpy.c",
                       group="blas",
                       targets=[("double", "void"), ("float", "void"),
                                ("int32_t", "void"), ("int64_t", "void")],
-                      args=[("{target}", "{Val0}"), ("const {Vec}", "{Vec0}"),
+                      args=[("const {target}", "{Val0}"), ("const {Vec}", "{Vec0}"),
                             ("{Vec}", "{Vec1}")],
                       operation='''
                       {omp_directive}
@@ -38,7 +38,7 @@ with clib_gen_io.read_and_formatting(obj_dir + "dot.c",
                       group="blas",
                       targets=[("double", "double"), ("float", "float"),
                                ("int32_t", "int32_t"), ("int64_t", "int64_t")],
-                      args=[("const {Vec}", "{Vec0}"), ("{Vec}", "{Vec1}")],
+                      args=[("const {Vec}", "{Vec0}"), ("const {Vec}", "{Vec1}")],
                       omp_option="reduction(+:{RET})",
                       operation='''
                       {target_ret} {RET};
