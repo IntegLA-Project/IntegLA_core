@@ -51,3 +51,28 @@ with clib_gen_io.read_and_formatting(obj_dir + "dot.c",
                       src_file=src,
                       test_file=test,
                       header_file=header)
+
+
+with clib_gen_io.read_and_formatting(obj_dir + "sum.c",
+                                     obj_dir + "sum_test.cpp",
+                                     obj_dir + "blas.hpp") as (src, test,
+                                                               header):
+    clib_gen.generate(name="sum",
+                      group="blas",
+                      targets=[("double", "double"), ("float", "float"),
+                               ("int32_t", "int32_t"), ("int64_t", "int64_t")],
+                      args=[("const {Vec}", "{Vec0}")],
+                      omp_option="reduction(+:{RET})",
+                      operation='''
+                      {target_ret} {RET};
+
+                      {omp_directive}
+                      for( {INT} i = 0; i < {Vec0}.size; i++){{
+                          {RET} += {Vec0}[i];
+                      }}
+                      ''',
+                      src_file=src,
+                      test_file=test,
+                      header_file=header)
+
+
