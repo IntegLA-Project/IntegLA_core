@@ -83,6 +83,7 @@ class arg_type():
             Vec=TYPE_NAMES[target],
         )
         self.pure_type = self.type.replace("const ", "")
+        self.pure_type = self.pure_type.replace("&", "")
 
 
 class function_type():
